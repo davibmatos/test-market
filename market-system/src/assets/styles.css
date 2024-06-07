@@ -1,0 +1,108 @@
+.form-container {
+    padding: 20px;
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+.form-select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    margin-left: -4px;
+}
+
+.submit-button, .button-save, .button-cancel {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+}
+
+.submit-button {
+    background-color: #007bff;
+    color: white;
+    width: 512px;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
+
+.button-cancel {
+    background-color: #6c757d;
+    color: white;
+}
+
+.button-cancel:hover {
+    background-color: #545b62;
+}
+
+.button-save {
+    background-color: #28a745;
+    color: white;
+}
+
+.button-save:hover {
+    background-color: #218838;
+}
+
+.sales-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+.sales-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sales-input, .sales-select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    margin-bottom: 10px;
+}
+
+.sales-button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.sales-button-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.sales-button-primary:hover {
+    background-color: #0056b3;
+}
+
+.sales-button-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.sales-button-danger:hover {
+    background-color: #c82333;
+}
+
+.sales-summary {
+    text-align: right;
+    margin-top: 20px;
+}
