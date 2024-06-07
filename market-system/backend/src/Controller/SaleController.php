@@ -39,7 +39,7 @@ class SaleController extends BaseController
         try {
             $sale = $this->saleService->getSaleDetails($id);
             if (!$sale) {
-                throw new \Exception("Venda não encontrada");
+                throw new \Exception("essa venda não encontrada");
             }
             $this->successResponse($sale, "Detalhes da venda recuperados com sucesso");
         } catch (\Exception $e) {
