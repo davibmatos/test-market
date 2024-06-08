@@ -11,8 +11,7 @@ class DatabaseConnection {
 
     public static function getInstance() {
         if (self::$instance === null) {
-            $dotenv = Dotenv::createImmutable(__DIR__ . '/../..');
-            $dotenv->load();
+            Dotenv::createImmutable(__DIR__ . '/../..')->load();
 
             $host = $_ENV['DB_HOST'];
             $db = $_ENV['DB_NAME'];

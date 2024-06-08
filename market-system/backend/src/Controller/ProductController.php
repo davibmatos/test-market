@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Model\Product;
-use App\Model\ProductType;
 use App\Service\ProductService;
 
 class ProductController extends BaseController
@@ -15,14 +14,14 @@ class ProductController extends BaseController
         $this->productService = new ProductService();
     }
 
-    public function viewProducts()
+    public function index()
     {
         $products = Product::findAll();
         header('Content-Type: application/json');
         echo json_encode($products);
     }
 
-    public function addProduct()
+    public function store()
     {
         try {
             $product = $this->productService->createProduct(json_decode(file_get_contents('php://input'), true));
@@ -32,7 +31,7 @@ class ProductController extends BaseController
         }
     }
 
-    public function editProduct($id)
+    public function edit($id)
     {
         try {
             $this->productService->updateProduct($id, json_decode(file_get_contents('php://input'), true));
@@ -42,7 +41,7 @@ class ProductController extends BaseController
         }
     }
 
-    public function deleteProduct($id)
+    public function delete($id)
     {
         try {
             $this->productService->deleteProduct($id);
@@ -52,7 +51,7 @@ class ProductController extends BaseController
         }
     }
 
-    public function searchProducts()
+    public function search()
     {
         $query = $_GET['query'] ?? '';
 
@@ -65,45 +64,5 @@ class ProductController extends BaseController
         $products = Product::search($query);
         header('Content-Type: application/json');
         echo json_encode($products);
-    }
-
-    public function viewProductTypes()
-    {
-        try {
-            $this->successResponse(ProductType::findAll(), "Todos os tipos de produtos recuperados com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 404);
-        }
-    }
-
-
-    public function addProductType()
-    {
-        try {
-            $productType = $this->productService->createProductType(json_decode(file_get_contents('php://input'), true));
-            $this->successResponse($productType, "Tipo de produto criado com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
-        }
-    }
-
-    public function editProductType($id)
-    {
-        try {
-            $this->productService->updateProductType($id, json_decode(file_get_contents('php://input'), true));
-            $this->successResponse(null, "Tipo de produto atualizado com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
-        }
-    }
-
-    public function deleteProductType($id)
-    {
-        try {
-            $this->productService->deleteProductType($id);
-            $this->successResponse(null, "Tipo de produto excluído com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
-        }
     }
 }
