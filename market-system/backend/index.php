@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 $request = $_SERVER['REQUEST_URI'];
 $requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -18,6 +18,7 @@ $requestPath = parse_url($request, PHP_URL_PATH);
 
 $productController = new \App\Controller\ProductController();
 $productTypeController = new \App\Controller\ProductTypeController();
+$saleController = new \App\Controller\saleController();
 
 switch ($requestPath) {
     case '/product/add':
