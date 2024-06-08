@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Database\DatabaseConnection;
 use App\Model\Sale;
 use App\Model\SaleItem;
+use DateTime;
 
 class SaleService
 {
@@ -15,7 +16,8 @@ class SaleService
 
         try {
             $sale = new Sale();
-            $sale->sale_date = $data['date'] ?? date('Y-m-d H:i:s');
+            $date = new DateTime($data['date']);
+            $sale->sale_date = $date->format('Y-m-d H:i:s');
             $sale->save();
 
             if (isset($data['cart']) && is_array($data['cart'])) {

@@ -20,7 +20,7 @@ class Product
         $databaseConnection = DatabaseConnection::getInstance();
         $sqlQuery = $this->id
             ? "UPDATE products SET name = :name, price = :price, stock = :stock, type_id = :type_id WHERE id = :id"
-            : "INSERT INTO products (name, price, stock, type_id) VALUES (:name, :price, :stock, :type_id) RETURNING id";
+            : "INSERT INTO products (name, price, stock, type_id) VALUES (:name, :price, :stock, :type_id)";
 
         $statement = $databaseConnection->prepare($sqlQuery);
         $parameters = [
@@ -37,7 +37,7 @@ class Product
         $statement->execute($parameters);
 
         if (!$this->id) {
-            $this->id = $statement->fetch(PDO::FETCH_ASSOC)['id'];
+            $this->id = $databaseConnection->lastInsertId();
         }
     }
 

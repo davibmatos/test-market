@@ -18,7 +18,7 @@ class DatabaseConnection {
             $user = $_ENV['DB_USER'];
             $pass = $_ENV['DB_PASS'];
 
-            $dsn = "pgsql:host=$host;port=5433;dbname=$db";
+            $dsn = "mysql:host=$host;port=3306;dbname=$db";
             $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

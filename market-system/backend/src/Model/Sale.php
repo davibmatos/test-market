@@ -41,7 +41,7 @@ class Sale
                 COALESCE(SUM(si.price_at_time * si.quantity), 0) AS total,
                 COALESCE(SUM(si.tax_amount), 0) AS taxes
             FROM sales s
-            LEFT JOIN sale_items si ON s.id = si.sale_id
+            LEFT JOIN sales_items si ON s.id = si.sale_id
             GROUP BY s.id, s.sale_date
         ";
         $statement = $database->prepare($query);
