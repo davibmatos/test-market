@@ -26,9 +26,8 @@ class SaleController extends BaseController
 
     public function index()
     {
-        try {
-            $sales = $this->saleService->getAllSales();
-            $this->successResponse($sales, "Vendas recuperadas com sucesso");
+        try {           
+            $this->successResponse($this->saleService->getAllSales(), "Vendas recuperadas com sucesso");
         } catch (\Exception $e) {
             $this->errorResponse($e->getMessage(), 500);
         }

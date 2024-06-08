@@ -119,7 +119,6 @@ export default {
     fetchSales() {
       apiClient.get('/sale/view')
         .then(response => {
-          console.log(response.data.data);
           this.sales = response.data.data;
         })
         .catch(error => console.error('Erro ao buscar vendas:', error));

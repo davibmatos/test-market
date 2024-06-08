@@ -11,12 +11,13 @@ class Sale
     public $deletedAt;
     public $total;
     public $taxes;
+    public $sale_date;
 
     public function save()
     {
         $database = DatabaseConnection::getInstance();
-        $statement = $database->prepare("INSERT INTO sales (sale_date) VALUES (:saleDate)");
-        $statement->bindParam(':saleDate', $this->saleDate);
+        $statement = $database->prepare("INSERT INTO sales (sale_date) VALUES (:sale_date)");
+        $statement->bindParam(':sale_date', $this->sale_date);
         $statement->execute();
         $this->id = $database->lastInsertId();
     }
@@ -37,10 +38,10 @@ class Sale
             SELECT 
                 s.id, 
                 s.sale_date,
-                COALESCE(SUM(si.priceAtTime * si.quantity), 0) AS total,
-                COALESCE(SUM(si.taxAmount), 0) AS taxes
+                COALESCE(SUM(si.price_at_time * si.quantity), 0) AS total,
+                COALESCE(SUM(si.tax_amount), 0) AS taxes
             FROM sales s
-            LEFT JOIN sale_items si ON s.id = si.saleId
+            LEFT JOIN sale_items si ON s.id = si.sale_id
             GROUP BY s.id, s.sale_date
         ";
         $statement = $database->prepare($query);
