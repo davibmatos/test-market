@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model;
 
 use App\Database\DatabaseConnection;
@@ -12,46 +13,46 @@ class ProductType {
     public $deleted_at;
 
     public static function findById($id) {
-        $db = DatabaseConnection::getInstance();
-        $stmt = $db->prepare("SELECT * FROM product_types WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
-        return $stmt->fetch();
+        $database = DatabaseConnection::getInstance();
+        $query = $database->prepare("SELECT * FROM product_types WHERE id = :id");
+        $query->execute(['id' => $id]);
+        $query->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+        return $query->fetch();
     }
 
     public static function deleteById($id) {
-        $db = DatabaseConnection::getInstance();
-        $stmt = $db->prepare("DELETE FROM product_types WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-        return $stmt->rowCount();
+        $database = DatabaseConnection::getInstance();
+        $query = $database->prepare("DELETE FROM product_types WHERE id = :id");
+        $query->execute(['id' => $id]);
+        return $query->rowCount();
     }
 
     public static function findAll() {
-        $db = DatabaseConnection::getInstance();
-        $stmt = $db->prepare("SELECT * FROM product_types");
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $database = DatabaseConnection::getInstance();
+        $query = $database->prepare("SELECT * FROM product_types");
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function save() {
-               
-        $stmt = DatabaseConnection::getInstance()->prepare($this->id 
+        $database = DatabaseConnection::getInstance();
+        $query = $database->prepare($this->id
         ? "UPDATE product_types SET type_name = :type_name, tax_rate = :tax_rate WHERE id = :id"
         : "INSERT INTO product_types (type_name, tax_rate) VALUES (:type_name, :tax_rate) RETURNING id");
 
-        $params = [
+        $parameters = [
             ':type_name' => $this->type_name,
             ':tax_rate' => $this->tax_rate,
         ];
-     
+
         if ($this->id) {
-            $params[':id'] = $this->id;
+            $parameters[':id'] = $this->id;
         }
 
-        $stmt->execute($params);
+        $query->execute($parameters);
 
         if (!$this->id) {
-            $this->id = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
+            $this->id = $query->fetch(PDO::FETCH_ASSOC)['id'];
         }
     }
 }

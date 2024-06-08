@@ -13,7 +13,7 @@ class SaleController extends BaseController
         $this->saleService = new SaleService();
     }
 
-    public function addSale()
+    public function store()
     {
         try {
             $saleData = json_decode(file_get_contents('php://input'), true);
@@ -24,7 +24,7 @@ class SaleController extends BaseController
         }
     }
 
-    public function viewSales()
+    public function index()
     {
         try {
             $sales = $this->saleService->getAllSales();
@@ -34,7 +34,7 @@ class SaleController extends BaseController
         }
     }
 
-    public function viewSaleDetails($id)
+    public function viewDetails($id)
     {
         try {
             $sale = $this->saleService->getSaleDetails($id);
@@ -46,5 +46,4 @@ class SaleController extends BaseController
             $this->errorResponse($e->getMessage(), 500);
         }
     }
-
 }

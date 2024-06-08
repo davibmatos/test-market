@@ -17,13 +17,13 @@ class Product
 
     public function save()
     {
-        $db = DatabaseConnection::getInstance();
-        $sql = $this->id
+        $databaseConnection = DatabaseConnection::getInstance();
+        $sqlQuery = $this->id
             ? "UPDATE products SET name = :name, price = :price, stock = :stock, type_id = :type_id WHERE id = :id"
             : "INSERT INTO products (name, price, stock, type_id) VALUES (:name, :price, :stock, :type_id) RETURNING id";
 
-        $stmt = $db->prepare($sql);
-        $params = [
+        $statement = $databaseConnection->prepare($sqlQuery);
+        $parameters = [
             ':name' => $this->name,
             ':price' => $this->price,
             ':stock' => $this->stock,
@@ -31,51 +31,51 @@ class Product
         ];
 
         if ($this->id) {
-            $params[':id'] = $this->id;
+            $parameters[':id'] = $this->id;
         }
 
-        $stmt->execute($params);
+        $statement->execute($parameters);
 
         if (!$this->id) {
-            $this->id = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
+            $this->id = $statement->fetch(PDO::FETCH_ASSOC)['id'];
         }
     }
 
     public static function findById($id)
     {
-        $db = DatabaseConnection::getInstance();
-        $stmt = $db->prepare("SELECT * FROM products WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
-        return $stmt->fetch();
+        $databaseConnection = DatabaseConnection::getInstance();
+        $statement = $databaseConnection->prepare("SELECT * FROM products WHERE id = :id");
+        $statement->execute([':id' => $id]);
+        $statement->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+        return $statement->fetch();
     }
 
     public static function deleteById($id)
     {
-        $db = DatabaseConnection::getInstance();
-        $stmt = $db->prepare("DELETE FROM products WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-        return $stmt->rowCount();
+        $databaseConnection = DatabaseConnection::getInstance();
+        $statement = $databaseConnection->prepare("DELETE FROM products WHERE id = :id");
+        $statement->execute([':id' => $id]);
+        return $statement->rowCount();
     }
 
     public static function findAll()
     {
-        $db = DatabaseConnection::getInstance();
+        $databaseConnection = DatabaseConnection::getInstance();
         $query = "
             SELECT p.id, p.name, p.price, p.stock, p.type_id, pt.tax_rate 
             FROM products p
             LEFT JOIN product_types pt ON p.type_id = pt.id";
-        $stmt = $db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $statement = $databaseConnection->prepare($query);
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function search($query)
+    public static function search($searchQuery)
     {
-        $db = DatabaseConnection::getInstance();
-        $likeQuery = '%' . strtolower($query) . '%';
-        $stmt = $db->prepare("SELECT * FROM products WHERE LOWER(name) LIKE :query");
-        $stmt->execute(['query' => $likeQuery]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $databaseConnection = DatabaseConnection::getInstance();
+        $likeQuery = '%' . strtolower($searchQuery) . '%';
+        $statement = $databaseConnection->prepare("SELECT * FROM products WHERE LOWER(name) LIKE :query");
+        $statement->execute([':query' => $likeQuery]);
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }
