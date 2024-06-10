@@ -21,6 +21,10 @@ class ProductService
 
     public function createProductType($data)
     {
+        if ($this->productTypeExistsByName($data['type_name'])) {
+            throw new \Exception("O tipo de produto já existe.");
+        }
+
         $productType = new ProductType();
         $productType->type_name = $data['type_name'];
         $productType->tax_rate = $data['tax_rate'];
@@ -73,5 +77,12 @@ class ProductService
     {
         ProductType::deleteById($id);
         return true;
+    }
+
+    public function productTypeExistsByName($typeName)
+    {
+        $statement = DatabaseConnection::getInstance()->prepare("SELECT COUNT(*) FROM product_types WHERE type_name = :typeName");
+        $statement->execute([':typeName' => $typeName]);
+        return $statement->fetchColumn() > 0;
     }
 }

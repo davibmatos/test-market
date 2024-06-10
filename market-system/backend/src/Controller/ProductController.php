@@ -16,18 +16,15 @@ class ProductController extends BaseController
 
     public function index()
     {
-        $products = Product::findAll();
-        header('Content-Type: application/json');
-        echo json_encode($products);
+        echo json_encode(Product::findAll());
     }
 
     public function store()
     {
-        try {
-            $product = $this->productService->createProduct(json_decode(file_get_contents('php://input'), true));
-            $this->successResponse($product, "Produto criado com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
+        try {           
+            $this->successResponse($this->productService->createProduct(json_decode(file_get_contents('php://input'), true)), "Produto criado com sucesso");
+        } catch (\Exception $exception) {
+            $this->errorResponse($exception->getMessage(), 500);
         }
     }
 
@@ -36,8 +33,8 @@ class ProductController extends BaseController
         try {
             $this->productService->updateProduct($id, json_decode(file_get_contents('php://input'), true));
             $this->successResponse(null, "Produto atualizado com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
+        } catch (\Exception $exception) {
+            $this->errorResponse($exception->getMessage(), 500);
         }
     }
 
@@ -46,8 +43,8 @@ class ProductController extends BaseController
         try {
             $this->productService->deleteProduct($id);
             $this->successResponse(null, "Produto excluído com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
+        } catch (\Exception $exception) {
+            $this->errorResponse($exception->getMessage(), 500);
         }
     }
 
@@ -56,13 +53,9 @@ class ProductController extends BaseController
         $query = $_GET['query'] ?? '';
 
         if (empty($query)) {
-            header('Content-Type: application/json');
             echo json_encode([]);
             return;
         }
-
-        $products = Product::search($query);
-        header('Content-Type: application/json');
-        echo json_encode($products);
+        echo json_encode(Product::search($query));
     }
 }

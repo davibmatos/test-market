@@ -28,7 +28,7 @@
           <b-form-input v-model="editProduct.name"></b-form-input>
         </b-form-group>
         <b-form-group label="Preço do Produto">
-          <b-form-input v-model="editProduct.price" type="number" step="0.01" ></b-form-input>
+          <b-form-input v-model="editProduct.price" type="number" step="0.01"></b-form-input>
         </b-form-group>
         <b-form-group label="Tipo de Produto">
           <b-form-select v-model="editProduct.type_id" :options="productTypes"></b-form-select>
@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import apiClient from '../axios';
 
 export default {
@@ -49,12 +48,7 @@ export default {
     return {
       products: [],
       productTypes: [],
-      editProduct: {
-        id: null,
-        name: '',
-        price: 0,
-        type_id: null
-      },
+      editProduct: { id: null, name: '', price: 0, type_id: null },
       editModalVisible: false,
       search: '',
       fields: [
@@ -73,34 +67,31 @@ export default {
     }
   },
   methods: {
+    async fetchData() {
+      await this.fetchProductTypes();
+      await this.fetchProducts();
+    },
     async fetchProductTypes() {
       try {
         const response = await apiClient.get('/product-type/view');
         this.productTypes = response.data.data.map(type => ({
-          value: type.id,
-          text: type.type_name
-        }));        
+          value: type.id, text: type.type_name
+        }));
       } catch (error) {
         console.error('Erro ao buscar tipos de produtos:', error);
       }
     },
     async fetchProducts() {
       try {
-        await this.fetchProductTypes();
         const response = await apiClient.get('/product/view');
-        const productsWithTypes = response.data.map(product => {
-          const type = this.productTypes.find(type => type.value === product.type_id);
-          return {
-            ...product,
-            typeName: type ? type.text : 'Tipo não especificado'
-          };
-        });
-        this.products = productsWithTypes;        
+        this.products = response.data.map(product => ({
+          ...product,
+          typeName: this.productTypes.find(type => type.value === product.type_id)?.text || 'Tipo não especificado'
+        }));
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
       }
     },
-
     openEditModal(product) {
       this.editProduct = { ...product };
       this.editModalVisible = true;
@@ -108,21 +99,19 @@ export default {
     submitEdit() {
       apiClient.put(`/product/edit?id=${this.editProduct.id}`, this.editProduct)
         .then(() => {
-          this.fetchProducts();
+          this.fetchData();
           this.editModalVisible = false;
         })
         .catch(error => console.error('Erro ao editar produto:', error));
     },
     deleteProduct(product) {
       apiClient.delete(`/product/delete?id=${product.id}`)
-        .then(() => {
-          this.fetchProducts();
-        })
+        .then(() => this.fetchData())
         .catch(error => console.error('Erro ao deletar produto:', error));
     }
   },
   mounted() {
-    this.fetchProducts();
+    this.fetchData();
   }
 };
 </script>

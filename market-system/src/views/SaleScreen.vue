@@ -9,7 +9,7 @@
     <b-table :items="sales" :fields="salesFields" class="mb-5">
       <template #cell(sale_date)="data">
         {{ $formatDate(data.item.sale_date) }}
-      </template>      
+      </template>
     </b-table>
 
     <div v-if="newSaleViewVisible">
@@ -102,42 +102,34 @@ export default {
   methods: {
     fetchProducts() {
       this.isLoading = true;
-      apiClient.get('/product/view')
-        .then(response => {
-          console.log("Produtos carregados:", response.data);
-          this.products = response.data.map(product => ({
-            ...product,
-            taxRate: product.taxRate || 0
-          }));
-          this.isLoading = false;
-        })
-        .catch(error => {
-          console.error('Erro ao buscar produtos:', error);
-          this.isLoading = false;
-        });
+      apiClient.get('/product/view').then(response => {
+        this.products = response.data.map(product => ({
+          ...product,
+          taxRate: product.taxRate || 0
+        }));
+        this.isLoading = false;
+      }).catch(error => {
+        console.error('Erro ao buscar produtos:', error);
+        this.isLoading = false;
+      });
     },
     fetchSales() {
-      apiClient.get('/sale/view')
-        .then(response => {
-          this.sales = response.data.data;
-        })
-        .catch(error => console.error('Erro ao buscar vendas:', error));
+      apiClient.get('/sale/view').then(response => {
+        this.sales = response.data.data;
+      }).catch(error => console.error('Erro ao buscar vendas:', error));
     },
     startNewSale() {
       this.newSaleViewVisible = true;
       this.cart = [];
       this.selectedProduct = null;
       this.selectedQuantity = 1;
-      this.searchQuery = '';
       this.fetchProducts();
     },
     fetchFilteredProducts(query) {
       if (query.length > 2) {
-        apiClient.get(`/product/search?query=${query}`)
-          .then(response => {
-            this.products = response.data;
-          })
-          .catch(error => console.error('Erro ao filtrar produtos:', error));
+        apiClient.get(`/product/search?query=${query}`).then(response => {
+          this.products = response.data;
+        }).catch(error => console.error('Erro ao filtrar produtos:', error));
       }
     },
     addProduct() {
@@ -155,10 +147,6 @@ export default {
       this.selectedProduct = null;
       this.selectedQuantity = 1;
     },
-    updateQuantity(item) {
-      item.subtotal = item.quantity * item.price;
-      item.tax = (item.taxRate / 100) * item.subtotal;
-    },
     removeProduct(product) {
       this.cart = this.cart.filter(item => item.id !== product.id);
     },
@@ -169,22 +157,10 @@ export default {
         taxes: this.totalTaxes,
         date: new Date().toISOString()
       };
-      apiClient.post('/sale/add', sale)
-        .then(() => {
-          this.fetchSales();
-          this.newSaleViewVisible = false;
-        })
-        .catch(error => console.error('Erro ao finalizar venda:', error));
-    },
-    viewSale(sale) {
-      console.log('Ver detalhes da venda:', sale);
-    },
-    deleteSale(sale) {
-      apiClient.delete(`/sales/delete?id=${sale.id}`)
-        .then(() => {
-          this.fetchSales();
-        })
-        .catch(error => console.error('Erro ao deletar venda:', error));
+      apiClient.post('/sale/add', sale).then(() => {
+        this.fetchSales();
+        this.newSaleViewVisible = false;
+      }).catch(error => console.error('Erro ao finalizar venda:', error));
     }
   },
   mounted() {

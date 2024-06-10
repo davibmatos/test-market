@@ -15,10 +15,7 @@ class DatabaseConnection {
 
             $host = $_ENV['DB_HOST'];
             $db = $_ENV['DB_NAME'];
-            $user = $_ENV['DB_USER'];
-            $pass = $_ENV['DB_PASS'];
-
-            $dsn = "mysql:host=$host;port=3306;dbname=$db";
+            
             $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -26,7 +23,7 @@ class DatabaseConnection {
             ];
 
             try {
-                self::$instance = new PDO($dsn, $user, $pass, $options);
+                self::$instance = new PDO("mysql:host=$host;port=3306;dbname=$db", $_ENV['DB_USER'], $_ENV['DB_PASS'], $options);
             } catch (\PDOException $e) {
                 throw new \PDOException($e->getMessage(), (int)$e->getCode());
             }
