@@ -75,7 +75,7 @@ export default {
       salesFields: [
         { key: 'id', label: 'ID' },
         { key: 'total', label: 'Total da Compra' },
-        { key: 'taxes', label: 'Total de Impostos' },
+        { key: 'tax_rate', label: 'Total de Impostos' },
         { key: 'sale_date', label: 'Data da Venda' },
       ],
       cartHeaders: [

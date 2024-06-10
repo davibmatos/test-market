@@ -1,5 +1,8 @@
 <template>
   <b-container>
+    <div v-if="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
     <b-row class="mb-3 mt-3">
       <b-col>
         <b-button variant="success" @click="openAddModal">Novo Cadastro</b-button>
@@ -31,6 +34,9 @@
     </b-modal>
 
     <b-modal v-model="addModalVisible" title="Cadastrar Novo Tipo de Produto" hide-footer>
+      <div v-if="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
       <b-form @submit.prevent="submitAdd">
         <b-form-group label="Nome do Tipo">
           <b-form-input v-model="newProductType.type_name"></b-form-input>
@@ -56,6 +62,7 @@ export default {
       newProductType: { type_name: '', tax_rate: 0 },
       editModalVisible: false,
       addModalVisible: false,
+      errorMessage: '',
       search: '',
       fields: [
         { key: 'type_name', label: 'Nome' },
@@ -97,22 +104,29 @@ export default {
       this.addModalVisible = true;
     },
     submitAdd() {
+      this.errorMessage = '';
       apiClient.post('/product-type/add', this.newProductType)
         .then(response => {
-          if (response && response.data && response.data.status === "success") {
+          if (response.data.status === "success") {
             this.productTypes.push(response.data.data);
             this.addModalVisible = false;
             this.fetchProductTypes();
+          } else {
+            this.errorMessage = response.data.message;
           }
         })
-        .catch(error => console.error('Erro ao enviar dados:', error));
+        .catch(error => {
+          this.errorMessage = error.response.data.message;
+        });
     },
     deleteProductType(item) {
       apiClient.delete(`/product-type/delete?id=${item.id}`)
         .then(() => {
           this.fetchProductTypes();
         })
-        .catch(error => console.error('Erro ao deletar tipo de produto:', error));
+        .catch(error => {
+          this.errorMessage = error.response.data.message;
+        });
     }
   },
   mounted() {

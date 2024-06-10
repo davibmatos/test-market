@@ -2,6 +2,9 @@
   <b-container class="form-container">
     <b-form @submit.prevent="submitProduct">
       <b-form-group label="Nome do Produto" class="form-group">
+        <div v-if="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
         <b-form-input class="form-input" v-model="product.name" required></b-form-input>
       </b-form-group>
       <b-form-group label="Preço do Produto" class="form-group">
@@ -10,7 +13,7 @@
       <b-form-group label="Estoque" class="form-group">
         <b-form-input class="form-input" v-model="product.stock" type="number" min="0" required></b-form-input>
       </b-form-group>
-      <b-form-group label="Tipo de Produto" class="form-group"> <!-- Adicione o label aqui -->
+      <b-form-group label="Tipo de Produto" class="form-group">
         <div class="d-flex align-items-center">
           <b-form-select class="form-select" v-model="product.type" :options="productTypes"></b-form-select>
           <b-button variant="outline-secondary" @click="openTypeModal" class="ml-2">
@@ -47,7 +50,8 @@ export default {
       product: { name: '', price: 0, type: null, stock: 0 },
       productTypes: [],
       newType: { name: '', taxRate: 0 },
-      typeModalOpen: false
+      typeModalOpen: false,
+      errorMessage: '',
     };
   },
   setup() {
@@ -74,7 +78,9 @@ export default {
         .then(() => {
           this.router.push('/products');
         })
-        .catch(error => console.error('Erro ao criar produto:', error));
+        .catch(error => {
+          this.errorMessage = error.response.data.message;        
+        });
     }
   },
   mounted() {
