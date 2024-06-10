@@ -18,7 +18,7 @@ $requestPath = parse_url($request, PHP_URL_PATH);
 
 $productController = new \App\Controller\ProductController();
 $productTypeController = new \App\Controller\ProductTypeController();
-$saleController = new \App\Controller\saleController();
+$saleController = new \App\Controller\SaleController();
 
 switch ($requestPath) {
     case '/product/add':

@@ -2,7 +2,9 @@ const { defineConfig } = require('@vue/cli-service');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = defineConfig({
-  transpileDependencies: true,  
+  transpileDependencies: true,
+
+  publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
 
   configureWebpack: {
     plugins: [
@@ -10,7 +12,7 @@ module.exports = defineConfig({
     ]
   },
 
-  chainWebpack: config => {   
+  chainWebpack: config => {
     config.plugins.delete('eslint');
   },
   

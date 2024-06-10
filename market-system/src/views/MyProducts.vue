@@ -25,13 +25,13 @@
     <b-modal v-model="editModalVisible" title="Editar Produto" hide-footer>
       <b-form @submit.prevent="submitEdit">
         <b-form-group label="Nome do Produto">
-          <b-form-input v-model="editProduct.name" required></b-form-input>
+          <b-form-input v-model="editProduct.name"></b-form-input>
         </b-form-group>
         <b-form-group label="Preço do Produto">
-          <b-form-input v-model="editProduct.price" type="number" required></b-form-input>
+          <b-form-input v-model="editProduct.price" type="number" step="0.01" ></b-form-input>
         </b-form-group>
         <b-form-group label="Tipo de Produto">
-          <b-form-select v-model="editProduct.type_id" :options="productTypes" required></b-form-select>
+          <b-form-select v-model="editProduct.type_id" :options="productTypes"></b-form-select>
         </b-form-group>
         <b-button type="submit" variant="primary">Salvar Alterações</b-button>
         <b-button variant="danger" @click="editModalVisible = false">Cancelar</b-button>
@@ -75,7 +75,7 @@ export default {
   methods: {
     async fetchProductTypes() {
       try {
-        const response = await axios.get('http://localhost:8080/product-type/view');
+        const response = await apiClient.get('/product-type/view');
         this.productTypes = response.data.data.map(type => ({
           value: type.id,
           text: type.type_name
@@ -87,7 +87,7 @@ export default {
     async fetchProducts() {
       try {
         await this.fetchProductTypes();
-        const response = await axios.get('http://localhost:8080/product/view');
+        const response = await apiClient.get('/product/view');
         const productsWithTypes = response.data.map(product => {
           const type = this.productTypes.find(type => type.value === product.type_id);
           return {
@@ -106,7 +106,7 @@ export default {
       this.editModalVisible = true;
     },
     submitEdit() {
-      apiClient.post(`/product/edit?id=${this.editProduct.id}`, this.editProduct)
+      apiClient.put(`/product/edit?id=${this.editProduct.id}`, this.editProduct)
         .then(() => {
           this.fetchProducts();
           this.editModalVisible = false;
