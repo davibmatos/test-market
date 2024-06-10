@@ -1,5 +1,8 @@
 <template>
   <b-container class="mt-4">
+    <div v-if="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
     <b-row class="mb-3">
       <b-col>
         <b-button variant="success" @click="$router.push('/add-product')">Cadastrar Produto</b-button>
@@ -50,6 +53,7 @@ export default {
       productTypes: [],
       editProduct: { id: null, name: '', price: 0, type_id: null },
       editModalVisible: false,
+      errorMessage: '',
       search: '',
       fields: [
         { key: 'name', label: 'Nome' },
@@ -104,10 +108,12 @@ export default {
         })
         .catch(error => console.error('Erro ao editar produto:', error));
     },
-    deleteProduct(product) {
+    deleteProduct(product) {      
       apiClient.delete(`/product/delete?id=${product.id}`)
         .then(() => this.fetchData())
-        .catch(error => console.error('Erro ao deletar produto:', error));
+        .catch(error => {
+          this.errorMessage = error.response.data.message;
+        });
     }
   },
   mounted() {
