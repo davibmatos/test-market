@@ -24,16 +24,14 @@ class Sale
 
     public static function findById($id)
     {
-        $database = DatabaseConnection::getInstance();
-        $statement = $database->prepare("SELECT * FROM sales WHERE id = :id");
+        $statement = DatabaseConnection::getInstance()->prepare("SELECT * FROM sales WHERE id = :id");
         $statement->execute([':id' => $id]);
         $statement->setFetchMode(\PDO::FETCH_CLASS, self::class);
         return $statement->fetch();
     }
 
     public static function findAll()
-    {
-        $database = DatabaseConnection::getInstance();
+    {        
         $query = "
             SELECT 
                 s.id, 
@@ -44,7 +42,7 @@ class Sale
             LEFT JOIN sales_items si ON s.id = si.sale_id
             GROUP BY s.id, s.sale_date
         ";
-        $statement = $database->prepare($query);
+        $statement = DatabaseConnection::getInstance()->prepare($query);
         $statement->execute();
         return $statement->fetchAll(\PDO::FETCH_CLASS, self::class);
     }

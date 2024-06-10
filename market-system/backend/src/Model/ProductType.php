@@ -15,25 +15,22 @@ class ProductType
 
     public static function findById($id)
     {
-        $database = DatabaseConnection::getInstance();
-        $query = $database->prepare("SELECT * FROM product_types WHERE id = :id");
+        $query = DatabaseConnection::getInstance()->prepare("SELECT * FROM product_types WHERE id = :id");
         $query->execute(['id' => $id]);
         $query->setFetchMode(PDO::FETCH_CLASS, get_called_class());
         return $query->fetch();
     }
 
     public static function deleteById($id)
-    {
-        $database = DatabaseConnection::getInstance();
-        $query = $database->prepare("DELETE FROM product_types WHERE id = :id");
+    {        
+        $query = DatabaseConnection::getInstance()->prepare("DELETE FROM product_types WHERE id = :id");
         $query->execute(['id' => $id]);
         return $query->rowCount();
     }
 
     public static function findAll()
     {
-        $database = DatabaseConnection::getInstance();
-        $query = $database->prepare("SELECT * FROM product_types");
+        $query = DatabaseConnection::getInstance()->prepare("SELECT * FROM product_types");
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }

@@ -11,8 +11,8 @@ class SaleService
 {
     public function createSale($data)
     {
-        $db = DatabaseConnection::getInstance();
-        $db->beginTransaction();
+        $database = DatabaseConnection::getInstance();
+        $database->beginTransaction();
 
         try {
             $sale = new Sale();
@@ -35,12 +35,12 @@ class SaleService
                 }
             }
 
-            $db->commit();
+            $database->commit();
             return $sale;
-        } catch (\Exception $e) {
-            $db->rollback();
-            error_log($e->getMessage());
-            throw $e;
+        } catch (\Exception $exception) {
+            $database->rollback();
+            error_log($exception->getMessage());
+            throw $exception;
         }
     }
 
@@ -51,15 +51,6 @@ class SaleService
 
     public function getSaleDetails($id)
     {
-        $sale = Sale::findById($id);
-        $items = SaleItem::findBySaleId($id);
-        return ['sale' => $sale, 'items' => $items];
+        return ['sale' => Sale::findById($id), 'items' => SaleItem::findBySaleId($id)];
     }
-}
-function dd($variable)
-{
-    echo '<pre>';
-    var_dump($variable);
-    echo '</pre>';
-    die();
 }

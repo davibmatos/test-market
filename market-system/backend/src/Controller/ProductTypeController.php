@@ -18,8 +18,8 @@ class ProductTypeController extends BaseController
     {
         try {
             $this->successResponse(ProductType::findAll(), "Todos os tipos de produtos recuperados com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 404);
+        } catch (\Exception $exception) {
+            $this->errorResponse($exception->getMessage(), 404);
         }
     }
 
@@ -28,8 +28,12 @@ class ProductTypeController extends BaseController
         try {
             $productType = $this->productService->createProductType(json_decode(file_get_contents('php://input'), true));
             $this->successResponse($productType, "Tipo de produto criado com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
+        } catch (\Exception $exception) {
+            if ($exception->getMessage() == "O tipo de produto já existe.") {
+                $this->errorResponse($exception->getMessage(), 409);
+            } else {
+                $this->errorResponse($exception->getMessage(), 500);
+            }
         }
     }
 
@@ -38,8 +42,8 @@ class ProductTypeController extends BaseController
         try {
             $this->productService->updateProductType($id, json_decode(file_get_contents('php://input'), true));
             $this->successResponse(null, "Tipo de produto atualizado com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
+        } catch (\Exception $exception) {
+            $this->errorResponse($exception->getMessage(), 500);
         }
     }
 
@@ -48,8 +52,8 @@ class ProductTypeController extends BaseController
         try {
             $this->productService->deleteProductType($id);
             $this->successResponse(null, "Tipo de produto excluído com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
+        } catch (\Exception $exception) {
+            $this->errorResponse($exception->getMessage(), 500);
         }
     }
 }

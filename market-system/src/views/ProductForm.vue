@@ -6,17 +6,18 @@
       </b-form-group>
       <b-form-group label="Preço do Produto" class="form-group">
         <b-form-input class="form-input" v-model="product.price" type="number" step="0.01" required></b-form-input>
-        <b-form-group label="Estoque" class="form-group">
-          <b-form-input class="form-input" v-model="product.stock" type="number" min="0" required></b-form-input>
-        </b-form-group>
       </b-form-group>
-      <div class="d-flex align-items-center">
-        <b-form-select class="form-select" v-model="product.type" :options="productTypes" label="Tipo de Produto">
-        </b-form-select>
-        <b-button variant="outline-secondary" @click="openTypeModal" class="ml-2">
-          <b-icon icon="plus"></b-icon>+
-        </b-button>
-      </div>
+      <b-form-group label="Estoque" class="form-group">
+        <b-form-input class="form-input" v-model="product.stock" type="number" min="0" required></b-form-input>
+      </b-form-group>
+      <b-form-group label="Tipo de Produto" class="form-group"> <!-- Adicione o label aqui -->
+        <div class="d-flex align-items-center">
+          <b-form-select class="form-select" v-model="product.type" :options="productTypes"></b-form-select>
+          <b-button variant="outline-secondary" @click="openTypeModal" class="ml-2">
+            <b-icon icon="plus"></b-icon>+
+          </b-button>
+        </div>
+      </b-form-group>
       <b-button class="submit-button" variant="primary" type="submit">Registrar Produto</b-button>
     </b-form>
 
@@ -35,31 +36,22 @@
   </b-container>
 </template>
 
-
 <script>
 import apiClient from '../axios';
 import "../assets/styles.css";
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 export default {
   data() {
     return {
-      product: {
-        name: '',
-        price: 0,
-        type: null
-      },
+      product: { name: '', price: 0, type: null, stock: 0 },
       productTypes: [],
-      newType: {
-        name: '',
-        taxRate: 0
-      },
+      newType: { name: '', taxRate: 0 },
       typeModalOpen: false
     };
   },
   setup() {
     const router = useRouter();
-
     return { router };
   },
   methods: {
@@ -79,8 +71,7 @@ export default {
     },
     submitProduct() {
       apiClient.post('/product/add', this.product)
-        .then(response => {
-          console.log('Produto criado com sucesso:', response.data);
+        .then(() => {
           this.router.push('/products');
         })
         .catch(error => console.error('Erro ao criar produto:', error));

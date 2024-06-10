@@ -53,10 +53,7 @@ export default {
     return {
       productTypes: [],
       editProductType: {},
-      newProductType: {
-        type_name: '',
-        tax_rate: 0
-      },
+      newProductType: { type_name: '', tax_rate: 0 },
       editModalVisible: false,
       addModalVisible: false,
       search: '',
@@ -79,18 +76,15 @@ export default {
     fetchProductTypes() {
       apiClient.get('/product-type/view')
         .then(response => {
-          console.log("Dados recebidos:", response.data.data);
           this.productTypes = response.data.data;
         })
         .catch(error => console.error('Erro ao carregar tipos de produtos:', error));
     },
     openEditModal(item) {
-      console.log("Abrindo modal para editar:", item);
       this.editProductType = { ...item };
       this.editModalVisible = true;
     },
     submitEdit() {
-      console.log("Submetendo edição para:", this.editProductType);
       apiClient.put(`/product-type/edit?id=${this.editProductType.id}`, this.editProductType)
         .then(() => {
           this.fetchProductTypes();
@@ -103,31 +97,16 @@ export default {
       this.addModalVisible = true;
     },
     submitAdd() {
-  console.log("Dados para submissão:", JSON.stringify(this.newProductType));
-
-  apiClient.post('/product-type/add', this.newProductType, {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(response => {
-    console.log('Resposta do servidor:', response);  // Log da resposta completa
-    if (response && response.data && response.data.status === "success") {
-      console.log('Produto adicionado com sucesso.');
-      this.productTypes.push(response.data.data);
-      this.addModalVisible = false;
-      this.fetchProductTypes();
-    } else {
-      console.error('Resposta do servidor indicando falha:', response.data ? response.data.message : 'Sem mensagem de erro');
-    }
-  })
-  .catch(error => {
-    console.error('Erro ao enviar dados:', error);
-    console.error('Detalhes do erro:', error.response ? error.response.data : 'No additional error info');
-  });
-},
-
-
+      apiClient.post('/product-type/add', this.newProductType)
+        .then(response => {
+          if (response && response.data && response.data.status === "success") {
+            this.productTypes.push(response.data.data);
+            this.addModalVisible = false;
+            this.fetchProductTypes();
+          }
+        })
+        .catch(error => console.error('Erro ao enviar dados:', error));
+    },
     deleteProductType(item) {
       apiClient.delete(`/product-type/delete?id=${item.id}`)
         .then(() => {

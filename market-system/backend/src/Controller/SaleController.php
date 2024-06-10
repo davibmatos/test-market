@@ -35,12 +35,8 @@ class SaleController extends BaseController
 
     public function viewDetails($id)
     {
-        try {
-            $sale = $this->saleService->getSaleDetails($id);
-            if (!$sale) {
-                throw new \Exception("essa venda não encontrada");
-            }
-            $this->successResponse($sale, "Detalhes da venda recuperados com sucesso");
+        try {                   
+            $this->successResponse($this->saleService->getSaleDetails($id), "Detalhes da venda recuperados com sucesso");
         } catch (\Exception $e) {
             $this->errorResponse($e->getMessage(), 500);
         }
