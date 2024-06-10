@@ -29,11 +29,7 @@ class ProductTypeController extends BaseController
             $productType = $this->productService->createProductType(json_decode(file_get_contents('php://input'), true));
             $this->successResponse($productType, "Tipo de produto criado com sucesso");
         } catch (\Exception $exception) {
-            if ($exception->getMessage() == "O tipo de produto já existe.") {
-                $this->errorResponse($exception->getMessage(), 409);
-            } else {
-                $this->errorResponse($exception->getMessage(), 500);
-            }
+            $this->errorResponse($exception->getMessage(), 500);
         }
     }
 
@@ -53,6 +49,10 @@ class ProductTypeController extends BaseController
             $this->productService->deleteProductType($id);
             $this->successResponse(null, "Tipo de produto excluído com sucesso");
         } catch (\Exception $exception) {
+            if ($exception->getCode() == 23000) {
+                $this->errorResponse("O tipo de produto não pode ser deletado pois já existe um produto associado a ele.", 500);
+                return;
+            }
             $this->errorResponse($exception->getMessage(), 500);
         }
     }

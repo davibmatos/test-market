@@ -10,6 +10,10 @@ class ProductService
 {
     public function createProduct($data)
     {
+        if ($this->productExists('products', 'name', $data['name'])) {
+            throw new \Exception("O nome do produto já existe.");
+        }
+
         $product = new Product();
         $product->name = $data['name'];
         $product->price = $data['price'];
@@ -21,8 +25,8 @@ class ProductService
 
     public function createProductType($data)
     {
-        if ($this->productTypeExistsByName($data['type_name'])) {
-            throw new \Exception("O tipo de produto já existe.");
+        if ($this->productExists('product_types', 'type_name', $data['type_name'])) {
+            throw new \Exception("O nome do produto já existe.");
         }
 
         $productType = new ProductType();
@@ -48,14 +52,6 @@ class ProductService
         return $product;
     }
 
-    public function validateTypeId($typeId)
-    {
-        $db = DatabaseConnection::getInstance();
-        $stmt = $db->prepare("SELECT COUNT(*) FROM product_types WHERE id = :typeId");
-        $stmt->execute([':typeId' => $typeId]);
-        return $stmt->fetchColumn() > 0;
-    }
-
     public function deleteProduct($id)
     {
         Product::deleteById($id);
@@ -79,10 +75,10 @@ class ProductService
         return true;
     }
 
-    public function productTypeExistsByName($typeName)
-    {
-        $statement = DatabaseConnection::getInstance()->prepare("SELECT COUNT(*) FROM product_types WHERE type_name = :typeName");
-        $statement->execute([':typeName' => $typeName]);
+    public function productExists($tableName, $columnName, $value)
+    {        
+        $statement = DatabaseConnection::getInstance()->prepare("SELECT COUNT(*) FROM $tableName WHERE $columnName = :value");
+        $statement->execute([':value' => $value]);
         return $statement->fetchColumn() > 0;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Factory\SaleFactory;
+use App\Factory\SaleItemFactory;
 use App\Service\SaleService;
 
 class SaleController extends BaseController
@@ -10,7 +12,9 @@ class SaleController extends BaseController
 
     public function __construct()
     {
-        $this->saleService = new SaleService();
+        $saleFactory = new SaleFactory();
+        $saleItemFactory = new SaleItemFactory();
+        $this->saleService = new SaleService($saleFactory, $saleItemFactory);
     }
 
     public function store()
@@ -19,26 +23,26 @@ class SaleController extends BaseController
             $saleData = json_decode(file_get_contents('php://input'), true);
             $sale = $this->saleService->createSale($saleData);
             $this->successResponse($sale, "Venda criada com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
+        } catch (\Exception $exception) {
+            $this->errorResponse($exception->getMessage(), 500);
         }
     }
 
     public function index()
     {
-        try {           
+        try {
             $this->successResponse($this->saleService->getAllSales(), "Vendas recuperadas com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
+        } catch (\Exception $exception) {
+            $this->errorResponse($exception->getMessage(), 500);
         }
     }
 
     public function viewDetails($id)
     {
-        try {                   
+        try {
             $this->successResponse($this->saleService->getSaleDetails($id), "Detalhes da venda recuperados com sucesso");
-        } catch (\Exception $e) {
-            $this->errorResponse($e->getMessage(), 500);
+        } catch (\Exception $exception) {
+            $this->errorResponse($exception->getMessage(), 500);
         }
     }
 }

@@ -1,0 +1,1 @@
+{"version":1,"defects":{"ProductServiceTest::testCreateProductTypeSuccess":8,"SaleServiceTest::testCreateSaleSuccess":7},"times":{"ProductServiceTest::testCreateProductTypeSuccess":0.02,"ProductServiceTest::testCreateProductSuccess":0.021,"SaleServiceTest::testCreateSaleSuccess":0.034}}
