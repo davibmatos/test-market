@@ -1,5 +1,5 @@
 ## Teste do sistema hospedado
-Esse sistema pode ser acessado online através da url: davimatos.tech 
+Esse sistema pode ser acessado online através da url: http://davimatos.tech 
 Ao entrar no site, procure na parte superior um botão chamado "Testar"
 
 ## Instalação/Configuração do Ambiente
